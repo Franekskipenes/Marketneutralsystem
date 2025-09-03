@@ -1,6 +1,6 @@
 # Hyperliquid CMMA Bot
 
-A cryptocurrency trading bot that uses the CMMA (Close Minus Moving Average) intermarket strategy on Hyperliquid testnet.
+A cryptocurrency trading bot that uses the CMMA (Close Minus Moving Average) intermarket strategy on Hyperliquid.
 
 ## Features
 
@@ -23,21 +23,21 @@ pip install -r requirements.txt
 
 ### 2. Set Environment Variables
 
-You need to set your Hyperliquid testnet private key:
+You need to set your Hyperliquid private key:
 
 **Windows:**
 ```cmd
-set HL_TESTNET_PRIVATE_KEY=your_private_key_here
+set HL_PRIVATE_KEY=your_private_key_here
 ```
 
 **Linux/Mac:**
 ```bash
-export HL_TESTNET_PRIVATE_KEY=your_private_key_here
+export HL_PRIVATE_KEY=your_private_key_here
 ```
 
 **Or create a .env file:**
 ```
-HL_TESTNET_PRIVATE_KEY=your_private_key_here
+HL_PRIVATE_KEY=your_private_key_here
 ```
 
 ### 3. Configuration
@@ -84,7 +84,7 @@ python hyperliquid_cmma_bot.py
 1. **Data Fetching**: Bot fetches OHLC data from Binance for both BTC and ALT assets
 2. **Signal Generation**: Calculates CMMA indicators and generates intermarket signals
 3. **Position Management**: Checks current Hyperliquid positions and manages entries/exits
-4. **Trade Execution**: Places limit orders on Hyperliquid testnet based on signals
+4. **Trade Execution**: Places limit orders on Hyperliquid based on signals
 
 ### Trading Logic
 
@@ -128,6 +128,7 @@ This bot is for educational and testing purposes only. Trading cryptocurrencies 
 ## Requirements
 
 - Python 3.8+
-- Hyperliquid testnet account
+- Hyperliquid account
 - Private key for authentication
 - Internet connection for data fetching and trading
+
