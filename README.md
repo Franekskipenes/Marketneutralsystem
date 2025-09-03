@@ -1,6 +1,6 @@
 # Hyperliquid CMMA Bot
 
-A cryptocurrency trading bot that uses the CMMA (Close Minus Moving Average) intermarket strategy on Hyperliquid.
+A cryptocurrency trading bot that uses intermarket strategy on Hyperliquid.
 
 ## Features
 
@@ -131,4 +131,5 @@ This bot is for educational and testing purposes only. Trading cryptocurrencies 
 - Hyperliquid account
 - Private key for authentication
 - Internet connection for data fetching and trading
+
 
