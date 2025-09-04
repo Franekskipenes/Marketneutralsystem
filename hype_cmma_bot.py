@@ -42,6 +42,26 @@ PRIVATE_KEY_ENV = "HL_TESTNET_PRIVATE_KEY"
 
 
 # ─────────────────────────────────────────────────────────────
+# Helpers: Environment
+# ─────────────────────────────────────────────────────────────
+
+def load_env_files() -> None:
+    """Load environment variables from .env or dot.env if available."""
+    try:
+        from dotenv import load_dotenv  # type: ignore
+    except Exception:
+        return
+    try:
+        root_dir = os.path.dirname(__file__)
+        for fname in (".env", "dot.env"):
+            path = os.path.join(root_dir, fname)
+            if os.path.exists(path):
+                load_dotenv(dotenv_path=path, override=False)
+    except Exception:
+        pass
+
+
+# ─────────────────────────────────────────────────────────────
 # Local position ledger (persistent)
 # ─────────────────────────────────────────────────────────────
 
@@ -414,6 +434,8 @@ def ensure_target_position(info: Info,
 
 
 def run_bot():
+    # Load env files first so os.getenv can find keys
+    load_env_files()
     pk = os.getenv(PRIVATE_KEY_ENV)
     if not pk:
         raise RuntimeError(f"Missing {PRIVATE_KEY_ENV} environment variable")
