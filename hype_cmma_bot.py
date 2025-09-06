@@ -140,7 +140,7 @@ def fetch_binance_klines(asset: str, interval: str = BINANCE_INTERVAL, limit: in
     Returns DataFrame indexed by datetime with columns: open, high, low, close, diff, next_return.
     """
     symbol = _binance_symbol(asset)
-    url = "https://api.binance.us/api/v3/klines"
+    url = "https://api.binance.com/api/v3/klines"
     params = {"symbol": symbol, "interval": interval, "limit": limit}
     resp = requests.get(url, params=params, timeout=10)
     resp.raise_for_status()
@@ -366,15 +366,10 @@ def ensure_target_position(info: Info,
     Ensure live position matches desired target_mode (-1 short, 0 flat, 1 long).
     Returns True if any order was sent, False if already aligned.
     """
-    # Use local ledger for position state
+    # Use local ledger for position state first
     has_pos, szi = get_local_position(asset)
     in_long = has_pos and szi > 0
     in_short = has_pos and szi < 0
-
-    # No valid price -> cannot act
-    if price is None or price <= 0:
-        print("WARN: No valid price available; skipping trade sync.")
-        return False
 
     # Determine allowed size precision and quantize the order size to avoid rounding errors
     try:
@@ -390,38 +385,53 @@ def ensure_target_position(info: Info,
         sz_decimals = 3
 
     size_step = 10 ** (-sz_decimals)
-    raw_size_coin = trade_size_usd / price
-    # Floor to the nearest lot step; ensure at least one step
-    size_coin = max(size_step, math.floor(
-        raw_size_coin / size_step) * size_step)
-    # No price quantization needed for market execution
 
     if target_mode == 1:  # want long
+        acted = False
         if in_short:
             res_close = place_market_close(exchange, asset)
             print(f"ACTION: Close SHORT {asset}: {json.dumps(res_close)}")
             time.sleep(0.5)
+            acted = True
         if not in_long:
+            if price is None or price <= 0:
+                if not acted:
+                    print("WARN: No valid price to open LONG; skipping open.")
+                return acted
+            raw_size_coin = trade_size_usd / price
+            size_coin = max(size_step, math.floor(
+                raw_size_coin / size_step) * size_step)
             res = place_market_open(exchange, asset, True, size_coin)
             print(
                 f"ACTION: Enter LONG {asset} sz={size_coin:.6f} @mkt: {json.dumps(res)}")
             return True
-        return False
+        return acted
 
     if target_mode == -1:  # want short
+        acted = False
         if in_long:
             res_close = place_market_close(exchange, asset)
             print(f"ACTION: Close LONG {asset}: {json.dumps(res_close)}")
             time.sleep(0.5)
+            acted = True
         if not in_short:
+            if price is None or price <= 0:
+                if not acted:
+                    print("WARN: No valid price to open SHORT; skipping open.")
+                return acted
+            raw_size_coin = trade_size_usd / price
+            size_coin = max(size_step, math.floor(
+                raw_size_coin / size_step) * size_step)
             res = place_market_open(exchange, asset, False, size_coin)
             print(
                 f"ACTION: Enter SHORT {asset} sz={size_coin:.6f} @mkt: {json.dumps(res)}")
             return True
-        return False
+        return acted
 
     # target_mode == 0 -> want flat
-    if has_pos:
+    # Check live positions as well; close if either local or live shows exposure
+    has_pos_live, _szi_live = get_position(info, address, asset)
+    if has_pos or has_pos_live:
         res = place_market_close(exchange, asset)
         print(f"ACTION: Exit to FLAT {asset}: {json.dumps(res)}")
         return True
@@ -588,3 +598,4 @@ def run_bot():
 
 if __name__ == "__main__":
     run_bot()
+
