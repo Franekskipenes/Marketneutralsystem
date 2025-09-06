@@ -140,7 +140,7 @@ def fetch_binance_klines(asset: str, interval: str = BINANCE_INTERVAL, limit: in
     Returns DataFrame indexed by datetime with columns: open, high, low, close, diff, next_return.
     """
     symbol = _binance_symbol(asset)
-    url = "https://api.binance.com/api/v3/klines"
+    url = "https://api.binance.us/api/v3/klines"
     params = {"symbol": symbol, "interval": interval, "limit": limit}
     resp = requests.get(url, params=params, timeout=10)
     resp.raise_for_status()
