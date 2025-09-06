@@ -33,7 +33,7 @@ EXIT_LEVEL = 0.0
 TP_PCT = None               # e.g. 0.05 for 5% take-profit; None to disable
 
 # Execution params
-TRADE_SIZE_USD = 50.0
+TRADE_SIZE_USD = 100.0
 TIMEFRAME = "1h"            # Binance kline interval used for signal
 LOOP_INTERVAL_SECONDS = 300  # 5 minutes
 
