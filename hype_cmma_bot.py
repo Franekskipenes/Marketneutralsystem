@@ -429,9 +429,8 @@ def ensure_target_position(info: Info,
         return acted
 
     # target_mode == 0 -> want flat
-    # Check live positions as well; close if either local or live shows exposure
-    has_pos_live, _szi_live = get_position(info, address, asset)
-    if has_pos or has_pos_live:
+    # Use only local ledger to decide whether to close; avoid live queries
+    if has_pos:
         res = place_market_close(exchange, asset)
         print(f"ACTION: Exit to FLAT {asset}: {json.dumps(res)}")
         return True
@@ -598,4 +597,3 @@ def run_bot():
 
 if __name__ == "__main__":
     run_bot()
-
