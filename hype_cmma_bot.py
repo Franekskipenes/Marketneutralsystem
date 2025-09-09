@@ -429,11 +429,30 @@ def ensure_target_position(info: Info,
         return acted
 
     # target_mode == 0 -> want flat
-    # Use only local ledger to decide whether to close; avoid live queries
+    # Use only local ledger; if exposure exists, open equal inverse size to net to zero
     if has_pos:
-        res = place_market_close(exchange, asset)
-        print(f"ACTION: Exit to FLAT {asset}: {json.dumps(res)}")
-        return True
+        try:
+            abs_szi = abs(float(szi))
+            # Quantize to allowed size precision
+            size_coin = round(abs_szi, sz_decimals)
+            if size_coin <= 0:
+                size_coin = size_step
+            # If currently short (szi < 0), buy to flatten; if long, sell (is_buy=False)
+            is_buy_inverse = (szi < 0)
+            res = exchange.market_open(
+                asset, is_buy_inverse, size_coin, None, 0.01)
+            # After sending inverse, mark local ledger as flat
+            try:
+                update_local_after_close(asset)
+            except Exception:
+                pass
+            print(
+                f"ACTION: Exit to FLAT {asset} via inverse sz={size_coin:.6f} @mkt: {json.dumps(res)}"
+            )
+            return True
+        except Exception as e:
+            print(f"ERROR: Inverse close failed for {asset}: {e}")
+            return False
     return False
 
 
