@@ -116,7 +116,6 @@ The bot automatically handles this formatting to ensure compatibility.
 
 ## Safety Features
 
-- **Testnet Only**: Currently configured for Hyperliquid testnet
 - **Error Handling**: Graceful error handling with retry logic
 - **Position Checks**: Verifies current positions before placing new orders
 - **Logging**: Comprehensive logging of all actions and errors
@@ -131,6 +130,7 @@ This bot is for educational and testing purposes only. Trading cryptocurrencies 
 - Hyperliquid account
 - Private key for authentication
 - Internet connection for data fetching and trading
+
 
 
 
