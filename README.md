@@ -8,7 +8,7 @@ A cryptocurrency trading bot that uses intermarket strategy on Hyperliquid.
 - **Intermarket Trading**: Can trade either the ALT leg or BTC leg based on relative strength
 - **Take Profit**: Optional take-profit functionality to lock in gains
 - **Real-time Data**: Fetches live data from Binance for signal generation
-- **Automated Trading**: Executes trades automatically on Hyperliquid testnet
+- **Automated Trading**: Executes trades automatically on Hyperliquid
 - **Precision Handling**: Automatic rounding and minimum size validation for Hyperliquid API compatibility
 - **Automatic Size Adjustment**: Automatically retries with larger sizes if orders are rejected due to size requirements
 - **Correct API Format**: Sends size and price as strings as required by Hyperliquid API
@@ -131,5 +131,6 @@ This bot is for educational and testing purposes only. Trading cryptocurrencies 
 - Hyperliquid account
 - Private key for authentication
 - Internet connection for data fetching and trading
+
 
 
